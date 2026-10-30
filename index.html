@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Leśna kuchnia</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=Alegreya+Sans:wght@400;500;700&display=swap">
+<style>
+/* Layout: ciemny leśny nagłówek z sylwetą sosen i księżycem, pod nim jasna polana z recepturami w dwóch kolumnach (zakupy / kroki). */
+:root {
+  --bg: #e8ede3;
+  --surface: #f5f8f1;
+  --fg: #17261c;
+  --muted: #52635a;
+  --line: #c5d1c0;
+  --accent: #2c5a38;
+  --accent-ink: #f3f7ee;
+  --amber: #a8561a;
+  --chip: #dbe5d5;
+  --hero: #0d2216;
+  --hero-fg: #e6eede;
+  --hero-muted: #9fb5a2;
+  --tree-far: #16341f;
+  --tree-near: #08170e;
+  --moon: #e9e3c4;
+  --font-display: "Alegreya", Georgia, "Times New Roman", serif;
+  --font-body: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c1811; --surface: #132319; --fg: #e2ebdc; --muted: #98ad9d; --line: #27402f;
+    --accent: #8cc588; --accent-ink: #0c1811; --amber: #e3a35c; --chip: #1c3324;
+    --hero: #07120b; --tree-far: #0f2a19; --tree-near: #040c07;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c1811; --surface: #132319; --fg: #e2ebdc; --muted: #98ad9d; --line: #27402f;
+  --accent: #8cc588; --accent-ink: #0c1811; --amber: #e3a35c; --chip: #1c3324;
+  --hero: #07120b; --tree-far: #0f2a19; --tree-near: #040c07;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 18px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--hero); }
+a { color: inherit; }
+.bleed { margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))) calc(-1 * max(16px, env(safe-area-inset-right, 0px))); padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1040px; margin-inline: auto; }
+
+/* hero */
+.hero { background: var(--hero); color: var(--hero-fg); position: relative; overflow: hidden; padding-block: 56px 0; }
+.hero .wrap { position: relative; z-index: 2; padding-bottom: 150px; }
+.moon { position: absolute; right: 8%; top: 28px; width: 92px; height: 92px; border-radius: 50%; background: radial-gradient(circle at 36% 34%, #f4efd2, var(--moon) 60%, #cfc79c); box-shadow: 0 0 70px 14px rgba(233,227,196,.16); z-index: 1; }
+.kicker { font-size: .85rem; letter-spacing: .16em; text-transform: uppercase; color: var(--hero-muted); font-weight: 700; margin: 0 0 12px; }
+h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.8rem, 9vw, 5.6rem); line-height: .95; margin: 0 0 18px; letter-spacing: -.01em; text-wrap: balance; }
+.lead { max-width: 34em; font-size: 1.15rem; color: var(--hero-muted); margin: 0; }
+.lead b { color: var(--hero-fg); font-weight: 700; }
+.forest { position: absolute; left: 0; right: 0; bottom: -1px; height: 150px; z-index: 1; width: 100%; display: block; }
+
+/* nav */
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--hero); border-bottom: 1px solid rgba(255,255,255,.08); }
+.nav .wrap { display: flex; gap: 8px; overflow-x: auto; padding-block: 10px; scrollbar-width: thin; }
+.nav a { flex: none; text-decoration: none; color: var(--hero-fg); font-weight: 500; font-size: .95rem; padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.2); }
+.nav a:hover, .nav a:focus-visible { background: var(--hero-fg); color: var(--hero); outline: none; }
+.nav a:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+main { padding-block: 40px 56px; }
+section { scroll-margin-top: 70px; }
+h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 5vw, 2.8rem); line-height: 1.05; margin: 0 0 8px; text-wrap: balance; }
+.sec-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 4px; }
+.count { font-size: .85rem; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; color: var(--amber); }
+.intro { color: var(--muted); max-width: 40em; margin: 0 0 24px; }
+.block { margin-bottom: 64px; }
+
+/* rules + pantry */
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px 28px; margin: 22px 0 28px; }
+.rule { border-top: 2px solid var(--accent); padding-top: 8px; }
+.rule h4 { margin: 0 0 2px; font-size: .85rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.rule p { margin: 0; font-size: 1rem; }
+.tablebox { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+table { border-collapse: collapse; width: 100%; font-size: 1rem; }
+th, td { text-align: left; padding: 8px 14px; border-bottom: 1px solid var(--line); }
+th { font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+td:last-child { color: var(--muted); }
+
+/* toc */
+.toc { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 24px 32px; }
+.toc h3 { font-family: var(--font-display); font-size: 1.35rem; margin: 0 0 6px; }
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc li { margin: 0; }
+.toc a { display: flex; gap: 10px; padding: 4px 0; text-decoration: none; border-bottom: 1px dotted var(--line); font-size: 1rem; }
+.toc a:hover { color: var(--accent); }
+.toc a:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.toc .tid { flex: none; min-width: 2.4em; font-weight: 700; color: var(--amber); }
+
+/* filter */
+.filter { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 4px 0 40px; }
+.filter span { font-size: .85rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-right: 4px; }
+.filter button { font: inherit; font-size: .95rem; cursor: pointer; padding: 6px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); }
+.filter button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.filter button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+/* recipe */
+.recipe { padding-block: 26px; border-top: 1px solid var(--line); scroll-margin-top: 70px; }
+.rhead { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; margin-bottom: 14px; }
+.rid { font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; color: var(--accent-ink); background: var(--accent); border-radius: 6px; padding: 0 9px; line-height: 1.5; }
+h3.rt { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.35rem, 3.6vw, 1.75rem); line-height: 1.15; margin: 0; text-wrap: balance; flex: 1 1 14em; min-width: 0; }
+.meta { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { font-size: .85rem; font-weight: 700; padding: 2px 11px; border-radius: 999px; background: var(--chip); color: var(--fg); }
+.chip.t { background: transparent; border: 1px solid var(--line); color: var(--muted); font-weight: 500; }
+.rbody { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px 40px; }
+@media (min-width: 780px) { .rbody { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); } }
+.shop h4, .how h4 { margin: 0 0 6px; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--amber); }
+.shop ul { list-style: none; margin: 0; padding: 0; }
+.shop li label { display: flex; gap: 10px; align-items: flex-start; padding: 4px 0; cursor: pointer; line-height: 1.35; }
+.shop input { margin-top: 5px; accent-color: var(--accent); width: 16px; height: 16px; flex: none; }
+.shop input:checked + span { text-decoration: line-through; color: var(--muted); }
+.pantry { margin: 10px 0 0; padding: 9px 12px; background: var(--surface); border-left: 3px solid var(--line); font-size: .95rem; color: var(--muted); }
+.pantry b { color: var(--fg); letter-spacing: .08em; text-transform: uppercase; font-size: .75rem; margin-right: 6px; }
+.how ol { margin: 0; padding-left: 1.4em; display: grid; gap: 8px; }
+.how li::marker { font-weight: 700; color: var(--accent); }
+.note { font-style: italic; color: var(--muted); margin: 0 0 14px; max-width: 40em; }
+
+footer { background: var(--hero); color: var(--hero-muted); padding-block: 36px 40px; font-size: .95rem; }
+footer h2 { color: var(--hero-fg); font-size: 1.5rem; }
+footer ul { padding-left: 1.2em; margin: 8px 0 0; display: grid; gap: 4px; }
+footer a { color: var(--hero-fg); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+
+
+<header class="hero bleed">
+  <div class="moon" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="kicker">Dzik · jeleń · sarna</p>
+    <h1>Leśna kuchnia</h1>
+    <p class="lead"><b>42 przepisy</b> na dziczyznę do garnka i do airfryera, każdy z gramaturą i listą zakupów na 4 porcje. Na końcu rozdział z serem pleśniowym.</p>
+  </div>
+  <svg class="forest" id="forest" viewBox="0 0 1200 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg>
+</header>
+
+<nav class="nav bleed" aria-label="Rozdziały">
+  <div class="wrap">
+    <a href="#zasady">Zasady</a><a href="#spis">Spis treści</a><a href="#dzik">Dzik</a><a href="#jelen">Jeleń</a><a href="#sarna">Sarna</a><a href="#ser">Z serem pleśniowym</a>
+  </div>
+</nav>
+
+<main class="wrap">
+  <section id="zasady" class="block">
+    <h2>Zasady ogólne i spiżarnia</h2>
+    <p class="intro">Każdy przepis jest na 4 porcje i ok. 800–1000 g mięsa. Gramatury są orientacyjne, więc dopraw na końcu do smaku.</p>
+    <div class="rules">
+      <div class="rule"><h4>Dzik</h4><p>Mięso zbadane na włośnie i wypieczone do końca, min. 70–75°C w środku. Szynka i łopatka na gulasz i pieczeń, schab i polędwica na szybkie dania.</p></div>
+      <div class="rule"><h4>Jeleń i sarna</h4><p>Polędwica i schab najlepiej różowe, 54–58°C w środku. Po pieczeniu odstaw mięso na 5–10 min pod folią.</p></div>
+      <div class="rule"><h4>Airfryer</h4><p>Chude mięso natłuść (oliwa, masło, plaster boczku), nagrzej urządzenie 3 min i sprawdzaj termometrem. Czasy zależą od modelu i grubości.</p></div>
+      <div class="rule"><h4>Marynata</h4><p>24–48 h tylko do szynki, udźca i łopatki. Polędwica i schab wystarczy 2–4 h.</p></div>
+      <div class="rule"><h4>Termometr</h4><p>Sonda do mięsa (ok. 40–80 zł) to najlepsza inwestycja w tej kuchni.</p></div>
+    </div>
+    <h3 style="font-family:var(--font-display);font-size:1.4rem;margin:0 0 10px">Spiżarnia: kup raz, używaj w większości przepisów</h3>
+    <div class="tablebox"><table>
+      <thead><tr><th>Produkt</th><th>Ilość na start</th></tr></thead>
+      <tbody>
+        <tr><td>Jałowiec suszony</td><td>1 opakowanie (ok. 20 g)</td></tr>
+        <tr><td>Ziele angielskie i liść laurowy</td><td>po 1 opakowaniu</td></tr>
+        <tr><td>Pieprz czarny ziarnisty i mielony</td><td>po 1 opakowaniu</td></tr>
+        <tr><td>Majeranek, tymianek, rozmaryn suszony</td><td>po 1 opakowaniu</td></tr>
+        <tr><td>Papryka słodka i wędzona</td><td>po 1 opakowaniu</td></tr>
+        <tr><td>Sól, cukier, mąka pszenna</td><td>w domu</td></tr>
+        <tr><td>Olej rzepakowy i oliwa</td><td>po 0,5 l</td></tr>
+        <tr><td>Masło</td><td>250 g</td></tr>
+        <tr><td>Czerwone wino wytrawne</td><td>0,75 l (do marynat i sosów)</td></tr>
+        <tr><td>Koncentrat pomidorowy</td><td>1 słoik 190 g</td></tr>
+        <tr><td>Musztarda (Dijon i sarepska)</td><td>po 1 słoiku</td></tr>
+        <tr><td>Bulion wołowy lub drobiowy</td><td>1 opakowanie</td></tr>
+        <tr><td>Żurawina lub powidła śliwkowe</td><td>1 słoik</td></tr>
+      </tbody>
+    </table></div>
+    <p class="intro" style="margin-top:12px">W przepisach składniki z tej tabeli oznaczam jako spiżarnia z ilością. Do kupienia zostają świeże produkty.</p>
+  </section>
+
+  <section id="spis" class="block">
+    <h2>Spis treści</h2>
+    <p class="intro">Kliknij przepis, żeby przeskoczyć prosto do niego. Przefiltruj listę według sprzętu, jeśli dziś gotujesz tylko w jednym.</p>
+    <div class="toc" id="toc"></div>
+  </section>
+
+  <div class="filter" role="group" aria-label="Filtr sprzętu">
+    <span>Pokaż</span>
+    <button type="button" data-f="all" aria-pressed="true">Wszystkie</button>
+    <button type="button" data-f="a" aria-pressed="false">Airfryer</button>
+    <button type="button" data-f="g" aria-pressed="false">Garnek</button>
+  </div>
+
+  <div id="recipes"></div>
+</main>
+
+<footer class="bleed">
+  <div class="wrap">
+    <h2>Źródła inspiracji</h2>
+    <ul>
+      <li><a href="https://gotuj.eglos.pl/drukujpdf/artykul/31156">Gulasz z dzika, eglos.pl</a></li>
+      <li><a href="https://pulsarvision.com/journal/pl/dzik-w-kapuscie">Dzik w kapuście, Pulsar Vision</a></li>
+      <li><a href="https://smaker.pl/przepisy-dania-glowne/przepis-gulasz-z-sarniny,1936440,smaker.html">Gulasz z sarniny, Smaker</a></li>
+      <li><a href="https://smaker.pl/przepisy-dania-glowne/przepis-sarnina-w-orientalnym-stylu,1953092,foodsafari.html">Sarnina w orientalnym stylu, Smaker</a></li>
+      <li><a href="https://smaker.pl/przepisy-dodatki/przepis-sos-z-sera-plesniowego-z-marynowanym-pieprzem,104935,beata1978.html">Sos z sera pleśniowego, Smaker</a></li>
+      <li><a href="https://www.awin.com/docs.awin.com/marketing/Poland/Awin+MeetUp+Przepisy.pdf">Kluski śląskie z sosem pleśniowym, Awin</a></li>
+      <li><a href="https://trzoda.net/wp-content/uploads/2014/03/trzoda_2022-12-PRZEPISY.pdf">Ziemniaki z serem pleśniowym, Trzoda Chlewna</a></li>
+      <li><a href="https://www.salzburgerland.com/pl/?p=23782">Comber z sarny z gruszkami, Salzburgerland</a></li>
+      <li><a href="https://www.wildmeat.co.uk/blogs/news/how-to-cook-game-with-air-fryers">How to Cook Game with Air Fryers, Wild Meat Company</a></li>
+    </ul>
+    <p style="margin:18px 0 0">Przepisy ułożone na podstawie tych pomysłów. Ilości i czasy traktuj orientacyjnie.</p>
+  </div>
+</footer>
+
+<script>
+const RAW = `
+## dzik|Dzik|10 przepisów|Dzik wymaga pełnego wypieczenia, min. 70–75°C w środku, i badania na włośnie. Wolno duszona szynka lub łopatka jest najbezpieczniejsza i najsmaczniejsza.
+# D1|Pieczeń z szynki dzika w garnku|Garnek żeliwny|ok. 3,5 h|g
+K: szynka z dzika bez kości 1 kg, cebula 2 szt. (ok. 300 g), marchew 2 szt. (200 g), seler korzeń 150 g, śmietana 18% 200 ml, czerwone wino 300 ml
+S: jałowiec 8 ziaren, ziele angielskie 5 ziaren, liść laurowy 3 szt., sól 2 łyżeczki, pieprz 1 łyżeczka, olej 3 łyżki, mąka 1 łyżka
+- Zalej mięso winem z pokrojonymi warzywami i przyprawami. Marynuj w lodówce 24–48 h.
+- Osusz mięso, posól i obsmaż w oleju na złoto ze wszystkich stron (ok. 8 min).
+- Włóż do garnka z warzywami i marynatą. Piecz w piekarniku w 160°C pod przykryciem 2,5–3 h.
+- Wyjmij mięso, sos zmiksuj z mąką rozrobioną w śmietanie i zagotuj. Kroić w plastry, podać z kluskami śląskimi.
+# D2|Gulasz z szynki dzika z kiszonymi ogórkami|Garnek|ok. 3 h + marynata|g
+N: Na podstawie przepisu łowczego ze Skierniewic.
+K: szynka z dzika 1 kg, ogórki kiszone 3–4 szt. (ok. 300 g), śmietana 18% 1 szklanka (250 ml), białe wytrawne wino 200 ml, czosnek 2 ząbki, cytryna 1 szt., smalec 2 łyżki
+S: papryka wędzona 1 łyżeczka, majeranek 1 łyżeczka, ziele angielskie 5 ziaren, pieprz, sól, mąka 2 łyżki, bulion 250 ml, olej 100 ml
+- Mięso pokrój w kostkę 3 cm, skrop sokiem z cytryny, dodaj przyprawy, czosnek i olej. Marynuj 12 h w lodówce.
+- Obsmażaj w smalcu partiami (po ok. 250 g), żeby się smażyło, a nie gotowało.
+- Zalej bulionem i winem. Duś pod przykryciem ok. 2 h.
+- Dodaj pokrojone ogórki, a na koniec śmietanę wymieszaną z mąką. Gotuj jeszcze 15 min. Podaj z kaszą i zasmażanymi buraczkami.
+# D3|Dzik w kapuście|Garnek lub brytfanna|ok. 3 h|g
+K: łopatka lub szynka z dzika 1 kg, kapusta kiszona 800 g, boczek wędzony 150 g, jabłko 2 szt. (300 g), cebula 2 szt. (300 g)
+S: jałowiec 6 ziaren, liść laurowy 2 szt., kminek 1 łyżeczka, pieprz, sól, bulion 300 ml
+- Mięso posól, natrzyj pieprzem i obsmaż z każdej strony 3–4 min.
+- Na dno garnka daj boczek, cebulę, kapustę, jabłka i przyprawy. Na wierzch połóż mięso.
+- Podlej bulionem. Piecz w 150°C pod przykryciem 3 h, aż mięso będzie się rozpadać.
+- Mięso rozdziel widelcem, wymieszaj z kapustą. Podaj z ziemniakami.
+# D4|Schab z dzika w airfryerze|Airfryer|ok. 20 min|a
+K: schab z dzika bez kości 700 g (2 plastry po 3 cm), czosnek 3 ząbki, oliwa 3 łyżki
+S: majeranek 1 łyżeczka, musztarda 1 łyżka, sól 1,5 łyżeczki, pieprz
+- Natrzyj mięso oliwą, musztardą, czosnkiem i przyprawami. Marynuj 3–4 h.
+- Airfryer 180°C: piecz 14–16 min, w połowie obróć. W środku min. 72°C.
+- Odstaw na 5 min i pokrój w plastry. Podaj z sosem żurawinowym i pieczonymi ziemniakami.
+# D5|Polędwica z dzika w airfryerze z jabłkiem|Airfryer|ok. 25 min|a
+K: polędwica z dzika 600 g, jabłko 2 szt. (300 g), masło 30 g, świeży tymianek 4 gałązki
+S: oliwa 2 łyżki, sól 1 łyżeczka, pieprz
+- Natrzyj polędwicę oliwą, solą i pieprzem. Obsmaż na patelni 1 min z każdej strony.
+- Airfryer 190°C: 12–14 min, do min. 72°C w środku.
+- Jabłka w ćwiartkach z masłem i tymiankiem piecz w osobnym koszu 8 min w 180°C. Odstaw mięso na 5 min, pokrój i podaj z jabłkami.
+# D6|Szynka z dzika duszona ze śliwką|Garnek|ok. 3 h|g
+K: szynka z dzika 1 kg, śliwki suszone 150 g, cebula 2 szt., śmietana 18% 150 ml, boczek surowy plastry 100 g (do obłożenia)
+S: pieprz 1 łyżeczka, sól 2 łyżeczki, majeranek 1 łyżeczka, bulion 400 ml, olej 3 łyżki, mąka 1 łyżka
+- Natrzyj szynkę solą, pieprzem i majerankiem. Obłóż boczkiem i zwiąż sznurkiem.
+- Obsmaż w oleju, dodaj cebulę i bulion. Duś pod przykryciem 2 h.
+- Dodaj śliwki i duś jeszcze 40 min. Sos zagęść śmietaną z mąką.
+# D7|Gulasz z łopatki dzika z piwem i papryką|Garnek|ok. 2,5 h|g
+K: łopatka z dzika 1 kg, papryka czerwona 2 szt. (400 g), cebula 3 szt. (450 g), ciemne piwo 330 ml, koncentrat pomidorowy 2 łyżki
+S: papryka słodka 2 łyżki, wędzona 1 łyżeczka, majeranek 1 łyżeczka, sól, pieprz, olej 3 łyżki, bulion 300 ml, liść laurowy 2 szt.
+- Mięso pokrój w kostkę 3 cm i obsmaż partiami. Odłóż.
+- Na tym samym tłuszczu podsmaż cebulę i paprykę, dodaj przyprawy i koncentrat.
+- Wróć z mięsem, zalej piwem i bulionem. Duś 2 h na małym ogniu. Podaj z kluskami lub pieczywem.
+# D8|Polędwica z dzika w boczku z sosem żurawinowym|Airfryer|ok. 30 min|a
+K: polędwica z dzika 600 g, boczek wędzony plastry 150 g, żurawina (z glasu) 100 g, czerwone wino 100 ml
+S: tymianek 1 łyżeczka, pieprz, masło 20 g
+- Natrzyj polędwicę pieprzem i tymiankiem, owiń boczkiem i spnij wykałaczkami.
+- Airfryer 190°C: 14–16 min, w połowie obróć. W środku min. 72°C.
+- Sos: zredukuj wino z żurawiną i masłem w rondelku 8 min. Podaj z plasterkami mięsa.
+# D9|Pieczeń z dzika w sosie borowikowym|Garnek|ok. 3 h|g
+K: łopatka z dzika 1 kg, borowiki suszone 30 g, śmietana 18% 200 ml, cebula 2 szt. (300 g), marchew 2 szt. (200 g)
+S: ziele angielskie 4 ziarna, liść laurowy 2 szt., sól, pieprz, mąka 1 łyżka, olej 3 łyżki, bulion 400 ml
+- Grzyby zalej 200 ml gorącej wody na 30 min.
+- Mięso obsmaż, przełóż do garnka z cebulą, marchwią, grzybami z wodą i bulionem.
+- Duś 2,5 h. Sos zagęść śmietaną z mąką i przypraw do smaku.
+# D10|Kotlety z schabu dzika w panierce z airfryera|Airfryer|ok. 25 min|a
+K: schab z dzika 600 g (4 kotlety po 1,5 cm), jajka 2 szt., bułka tarta 100 g
+S: mąka 60 g, sól, pieprz, olej w sprayu lub 3 łyżki
+- Rozbij kotlety na 1 cm, posól i popieprz. Obtocz w mące, jajku i bułce.
+- Skrop olejem. Airfryer 190°C: 10–12 min, w połowie obróć. Mięso ma być całkiem upieczone, min. 72°C.
+- Podaj z ziemniakami i surówką z kiszonej kapusty.
+
+## jelen|Jeleń|10 przepisów|Jeleń jest chudszy i smaczniejszy niż dzik. Polędwica i schab najlepiej wychodzą różowe (54–58°C), a udziec i łopatka potrzebują wolnego duszenia.
+# J1|Polędwica z jelenia w airfryerze|Airfryer|ok. 25 min|a
+K: polędwica z jelenia 600 g, boczek wędzony plastry 100 g, czerwone wino 150 ml, masło 30 g
+S: jałowiec 4 ziarna (rozgniecione), pieprz 1 łyżeczka, sól 1 łyżeczka, oliwa 2 łyżki
+- Natrzyj mięso oliwą, jałowcem, solą i pieprzem. Obłóż boczkiem.
+- Airfryer 200°C: 10–13 min, do 54–56°C w środku.
+- Odstaw 10 min pod folią. Sos: zredukuj wino z masłem w rondelku 6 min i polej mięso.
+# J2|Pieczeń z udźca jelenia z warzywami|Garnek|ok. 3 h + marynata|g
+K: udziec z jelenia bez kości 1 kg, słonina 80 g (do szpikowania), cebula 2 szt. (300 g), marchew 2 szt. (200 g), seler korzeń 150 g, śmietana 18% 150 ml, czerwone wino 400 ml
+S: jałowiec 8 ziaren, ziele angielskie 5 ziaren, liść laurowy 3 szt., sól, pieprz, olej 3 łyżki, mąka 1 łyżka
+- Marynuj mięso 24–48 h w winie z warzywami i przyprawami. Naszpikuj słoniną.
+- Osusz, posól i obsmaż w oleju. Przełóż do garnka z warzywami i marynatą.
+- Piecz w 160°C pod przykryciem 2–2,5 h, polewając sosem. Mięso ma być miękkie.
+- Sos zmiksuj ze śmietaną i mąką, zagotuj. Podaj z kluskami i czerwoną kapustą.
+# J3|Gulasz z jelenia z piwem i śliwką|Garnek|ok. 2,5 h|g
+K: szynka z jelenia 1 kg, ciemne piwo 330 ml, śliwki suszone 100 g, cebula 3 szt. (450 g), koncentrat pomidorowy 2 łyżki
+S: papryka wędzona 1 łyżeczka, papryka słodka 1 łyżka, liść laurowy 2 szt., sól, pieprz, olej 3 łyżki, bulion 300 ml
+- Pokrój mięso w kostkę 3 cm i obsmażaj partiami po 250 g.
+- Zeszklij cebulę, dodaj koncentrat i papryki. Dołóż mięso, zalej piwem i bulionem.
+- Duś 2 h. Dodaj śliwki na ostatnie 30 min. Podaj z kopytkami.
+# J4|Schab z jelenia w szynce parmeńskiej|Garnek|ok. 30 min|g
+K: schab z jelenia 700 g (jeden kawałek), szynka parmeńska 6 plastrów (80 g), masło 40 g, świeży rozmaryn 3 gałązki
+S: sól 1 łyżeczka, pieprz, oliwa 2 łyżki
+- Posól, popieprz i obsmaż mięso w oliwie 6–8 min ze wszystkich stron. Owiń szynką.
+- Włóż do garnka z masłem i rozmarynem, przykryj. Piecz w 190°C 10–12 min, do 56°C.
+- Odstaw 10 min, pokrój w medaliony.
+# J5|Medaliony z polędwicy jelenia z sosem żurawinowym|Patelnia lub airfryer|ok. 20 min|ag
+K: polędwica z jelenia 600 g, żurawina z glasu 100 g, czerwone wino 100 ml, masło 30 g
+S: sól, pieprz, oliwa 2 łyżki, tymianek
+- Pokrój polędwicę w plastry po 3 cm, posól i popieprz.
+- Airfryer 200°C: 6–8 min, albo patelnia 3 min z każdej strony.
+- Sos: żurawina, wino i masło, redukcja 6 min. Podaj z puree z selera.
+# J6|Pieczeń z łopatki jelenia w sosie borowikowym|Garnek|ok. 3 h|g
+K: łopatka z jelenia 1 kg, borowiki suszone 30 g, śmietana 18% 200 ml, cebula 2 szt. (300 g), marchew 2 szt. (200 g)
+S: ziele angielskie 4 ziarna, liść laurowy 2 szt., sól, pieprz, olej 3 łyżki, bulion 400 ml, mąka 1 łyżka
+- Grzyby zalej 200 ml gorącej wody na 30 min.
+- Obsmaż mięso, przełóż do garnka z cebulą, marchwią, grzybami i wodą z grzybów oraz bulionem.
+- Duś 2,5–3 h. Sos zagęść śmietaną z mąką.
+# J7|Udziec jelenia w sosie śmietanowym z jałowcem|Garnek|ok. 2,5 h|g
+K: udziec z jelenia 1 kg w jednym kawałku, śmietana 18% 250 ml, cebula 2 szt. (300 g), czosnek 3 ząbki, czerwone wino 200 ml
+S: jałowiec 8 ziaren, pieprz, sól, liść laurowy 2 szt., olej 3 łyżki, bulion 300 ml, mąka 1 łyżka
+- Natrzyj mięso jałowcem, solą i czosnkiem. Marynuj 12 h.
+- Obsmaż, dodaj cebulę, wino i bulion. Duś 2 h pod przykryciem.
+- Dodaj śmietanę z mąką i gotuj jeszcze 15 min. Podaj z kluskami.
+# J8|Schab z jelenia w airfryerze z ziołami|Airfryer|ok. 25 min|a
+K: schab z jelenia 700 g (2 plastry po 3 cm), czosnek 3 ząbki, świeże zioła (rozmaryn i tymianek) po 3 gałązki, masło 30 g
+S: oliwa 3 łyżki, sól 1 łyżeczka, pieprz
+- Natrzyj mięso oliwą, ziołami i czosnkiem. Marynuj 2–3 h.
+- Airfryer 190°C: 12–14 min, do 56–58°C. Posmaruj masłem na ostatnie 2 min.
+- Odstaw 8 min i pokrój w poprzek włókien.
+# J9|Gulasz węgierski z jelenia z papryką|Garnek|ok. 2,5 h|g
+K: łopatka z jelenia 1 kg, papryka czerwona 3 szt. (500 g), cebula 3 szt. (450 g), pomidory z puszki 400 g, śmietana 18% 100 ml
+S: papryka słodka 2 łyżki, wędzona 1 łyżeczka, kminek 1 łyżeczka, sól, pieprz, olej 4 łyżki, bulion 300 ml
+- Smaż cebulę 10 min, dodaj papryki i kminek. Dołóż mięso w kostce 3 cm i obsmaż.
+- Dodaj pomidory i bulion, duś 2 h pod przykryciem.
+- Dodaj paprykę w kawałkach na 20 min przed końcem. Podaj ze śmietaną i ziemniakami.
+# J10|Roladki z jelenia z suszonymi pomidorami i serem|Airfryer|ok. 30 min|a
+K: schab lub udziec z jelenia 700 g (4 plastry po 175 g), suszone pomidory 60 g, ser feta lub kozi 100 g, szpinak świeży 80 g
+S: oliwa 2 łyżki, sól, pieprz, papryka słodka 1 łyżeczka
+- Rozbij plastry cienko, posól i popieprz. Nałóż na każdy pomidory, ser i szpinak.
+- Zwiń, spnij wykałaczką i natrzyj oliwą z papryką.
+- Airfryer 180°C: 14–16 min, w połowie obróć. Podaj z kaszą.
+
+## sarna|Sarna|10 przepisów|Sarnina jest najdelikatniejsza i najłatwiej ją przesuszyć. Polędwicę i schab piecz krótko, do 54–56°C, a szynkę i łopatkę duś na małym ogniu. Starsze sztuki wymagają dłuższej marynaty.
+# S1|Polędwica z sarny w airfryerze z borówkami|Airfryer|ok. 20 min|a
+K: polędwica z sarny 500 g, borówki lub żurawina z glasu 100 g, czerwone wino 100 ml, masło 30 g
+S: oliwa 2 łyżki, sól 1 łyżeczka, pieprz, jałowiec 3 ziarna
+- Natrzyj polędwicę oliwą, solą, pieprzem i rozgniecionym jałowcem.
+- Airfryer 200°C: 8–10 min, do 54–56°C w środku. Odstaw 8 min.
+- Sos: borówki, wino i masło, redukcja 6 min. Podaj z puree z pietruszki.
+# S2|Udziec z sarny pieczony w winie|Garnek|ok. 2 h + marynata|g
+K: udziec z sarny 1 kg, słonina 80 g, cebula 2 szt. (300 g), marchew 2 szt. (200 g), czerwone wino 500 ml, śmietana 18% 150 ml
+S: jałowiec 8 ziaren, ziele angielskie 4 ziarna, liść laurowy 3 szt., sól, pieprz, olej 3 łyżki, mąka 1 łyżka
+- Marynuj mięso 48 h w winie z warzywami i przyprawami. Naszpikuj słoniną.
+- Obsmaż, przełóż do garnka z warzywami i połową marynaty.
+- Piecz w 160°C pod przykryciem ok. 2 h, często polewając sosem. Pod koniec odkryj na 15 min.
+- Sos zagęść śmietaną z mąką. Podaj z kluskami i buraczkami.
+# S3|Gulasz z sarniny z jałowcem i grzybami|Garnek|ok. 2 h|g
+N: Wzorowany na przepisie ze Smakera.
+K: szynka lub łopatka z sarny 1 kg, boczek wędzony 100 g, grzyby suszone 30 g, cebula 3 szt. (450 g), marchew 2 szt. (200 g)
+S: jałowiec 6 ziaren, goździki 3 szt., ziele angielskie 4 ziarna, liść laurowy 2 szt., rozmaryn, tymianek, papryka słodka 1 łyżeczka, mąka 2 łyżki, sól, pieprz, olej 3 łyżki, bulion 300 ml
+- Mięso i boczek pokrój w kostkę 2–3 cm, obtocz w mące z papryką.
+- Smaż partiami do zrumienienia. Przełóż do rondla z cebulą, marchwią i ziołami.
+- Dodaj przyprawy, grzyby i bulion. Duś pod przykryciem 1,5–2 h, mieszając. Podaj z ziemniakami lub kluskami.
+# S4|Sarnina w stylu orientalnym z kokosem|Garnek|ok. 1,5 h|g
+K: szynka z sarny 800 g, mleko kokosowe 400 ml, cebula 2 szt. (300 g), imbir świeży 20 g, czosnek 3 ząbki, pasta curry 2 łyżki, ryż 200 g
+S: olej 2 łyżki, sól, bulion 150 ml, papryka słodka
+- Mięso pokrój w kostkę 2 cm i obsmaż w oleju. Odłóż.
+- Zeszklij cebulę z imbirem, czosnkiem i pastą curry. Wróć z mięsem.
+- Zalej mlekiem kokosowym i bulionem. Duś 1–1,5 h na małym ogniu. Podaj z ryżem.
+# S5|Schab z sarny w airfryerze|Airfryer|ok. 20 min|a
+K: schab z sarny 600 g (2 plastry po 3 cm), czosnek 3 ząbki, masło 30 g
+S: oliwa 3 łyżki, majeranek 1 łyżeczka, sól 1 łyżeczka, pieprz, jałowiec 3 ziarna
+- Natrzyj mięso oliwą z przyprawami i czosnkiem. Marynuj 3–4 h.
+- Airfryer 190°C: 10–12 min, do 56°C. Posmaruj masłem na ostatnie 2 min.
+- Odstaw 8 min, pokrój w poprzek włókien.
+# S6|Szynka z sarny duszona z warzywami|Garnek|ok. 2,5 h|g
+K: szynka z sarny 1 kg, cebula 2 szt. (300 g), marchew 2 szt. (200 g), seler korzeń 150 g, śmietana 18% 150 ml, boczek surowy plastry 100 g
+S: jałowiec 6 ziaren, liść laurowy 2 szt., sól, pieprz, olej 3 łyżki, bulion 400 ml, mąka 1 łyżka
+- Natrzyj szynkę solą i pieprzem, obłóż boczkiem i zwiąż sznurkiem.
+- Obsmaż w garnku, dołóż warzywa i bulion. Duś 2 h pod przykryciem.
+- Sos zagęść śmietaną z mąką. Podaj z kaszą.
+# S7|Polędwica z sarny w boczku z sosem śmietanowo-grzybowym|Airfryer|ok. 25 min|a
+K: polędwica z sarny 500 g, boczek wędzony plastry 120 g, pieczarki 200 g, śmietana 18% 150 ml
+S: pieprz, sól, masło 20 g, tymianek 1 łyżeczka
+- Owiń polędwicę boczkiem, natrzyj pieprzem i tymiankiem.
+- Airfryer 190°C: 12–14 min, do 56°C. Odstaw 8 min.
+- Sos: smaż pieczarki na maśle, dodaj śmietanę, sól i pieprz i gotuj 5 min.
+# S8|Gulasz z sarny z czerwonym winem i śliwką|Garnek|ok. 2 h|g
+K: łopatka z sarny 1 kg, czerwone wino 300 ml, śliwki suszone 100 g, cebula 3 szt. (450 g), koncentrat pomidorowy 1 łyżka
+S: jałowiec 5 ziaren, liść laurowy 2 szt., sól, pieprz, olej 3 łyżki, bulion 300 ml, mąka 1 łyżka
+- Mięso w kostce 3 cm obsmażaj partiami.
+- Dodaj cebulę, koncentrat, wino i bulion. Duś 1,5 h.
+- Wrzuć śliwki na ostatnie 20 min. Zagęść mąką. Podaj z kluskami.
+# S9|Pieczeń z łopatki sarny w sosie śmietanowym|Garnek|ok. 2,5 h|g
+K: łopatka z sarny 1 kg, śmietana 18% 250 ml, cebula 2 szt. (300 g), pietruszka korzeń 1 szt. (100 g), czosnek 3 ząbki
+S: majeranek 1 łyżeczka, liść laurowy 2 szt., sól, pieprz, olej 3 łyżki, bulion 400 ml, mąka 1 łyżka
+- Natrzyj mięso solą, pieprzem, majerankiem i czosnkiem. Marynuj 12 h.
+- Obsmaż, dodaj cebulę, pietruszkę i bulion. Duś pod przykryciem 2 h.
+- Dodaj śmietanę z mąką i gotuj 15 min. Podaj z ziemniakami.
+# S10|Medaliony z sarny z gruszką i niebieskim serem|Airfryer|ok. 20 min|a
+K: polędwica z sarny 500 g, gruszka 2 szt. (300 g), ser pleśniowy 80 g, orzechy włoskie 30 g
+S: oliwa 2 łyżki, sól, pieprz, masło 20 g
+- Pokrój polędwicę w plastry po 3 cm, posól i popieprz.
+- Airfryer 200°C: 6–8 min, do 54–56°C. Gruszki w plastrach podsmaż na maśle 2 min.
+- Podaj medaliony z gruszką, serem i orzechami.
+
+## ser|Przepisy z serem pleśniowym|12 przepisów|Cztery przepisy na każde mięso. Ser pleśniowy (gorgonzola, lazur, roquefort lub dolcelatte) pasuje do chudej polędwicy i schabu, bo dodaje tłuszczu i wyrazistości. Solimy ostrożnie, bo ser jest słony.
+# P1|Polędwica z dzika w sosie z gorgonzoli|Airfryer + rondel|ok. 30 min|a
+K: polędwica z dzika 600 g, gorgonzola 100 g, śmietanka 30% 150 ml, cebula 1 szt. (120 g), gruszka 1 szt. (150 g)
+S: oliwa 2 łyżki, sól 1 łyżeczka, pieprz, masło 20 g
+- Natrzyj polędwicę oliwą, solą i pieprzem. Airfryer 190°C: 14–16 min, do min. 72°C. Odstaw 5 min.
+- Cebulę pokrój w ósemki i opiekaj na suchej patelni do ciemnych brzegów.
+- Śmietankę podgrzej z pokruszonym serem do rozpuszczenia, dodaj cebulę i gotuj 3 min.
+- Gruszkę w plastrach podsmaż na maśle 2 min. Podaj mięso w plastrach z sosem i gruszką.
+# P2|Schab z dzika z nadzieniem z sera pleśniowego|Airfryer|ok. 35 min|a
+K: schab z dzika 800 g (w jednym kawałku), ser pleśniowy 100 g, orzechy włoskie 40 g, szpinak świeży 80 g
+S: sól, pieprz, oliwa 2 łyżki, tymianek 1 łyżeczka
+- Natnij schab wzdłuż na kieszeń. Wypełnij serem, posiekanymi orzechami i szpinakiem.
+- Zwiąż sznurkiem, natrzyj oliwą, solą, pieprzem i tymiankiem.
+- Airfryer 180°C: 25–28 min, w połowie obróć. Do min. 72°C. Odstaw 8 min.
+# P3|Gulasz z dzika ze śmietaną i serem pleśniowym|Garnek|ok. 3 h|g
+K: szynka z dzika 1 kg, ser pleśniowy 120 g, śmietana 18% 200 ml, cebula 2 szt. (300 g), pieczarki 250 g
+S: jałowiec 6 ziaren, liść laurowy 2 szt., papryka słodka 1 łyżeczka, sól, pieprz, olej 3 łyżki, bulion 400 ml, mąka 1 łyżka
+- Kostkę 3 cm obsmaż partiami. Dodaj cebulę, papryki, bulion i przyprawy.
+- Duś pod przykryciem 2,5 h. Dodaj pieczarki na ostatnie 20 min.
+- Wmieszaj śmietanę z mąką, a na koniec pokruszony ser. Podgrzewaj 3 min, bez gotowania. Podaj z kluskami śląskimi.
+# P4|Dzik w kapuście zapiekany z serem pleśniowym|Garnek + piekarnik|ok. 3,5 h|g
+K: wcześniej duszony dzik z kapusty (przepis D3), ser pleśniowy 100 g, jabłko 1 szt. (150 g)
+S: pieprz, masło 20 g
+- Przygotuj mięso z kapustą według D3.
+- Przełóż do naczynia, na wierzchu ułóż plastry jabłka i pokruszony ser.
+- Zapiekaj w 200°C 10–12 min, aż ser się zarumieni.
+# P5|Polędwica z jelenia z sosem z lazurem|Airfryer + rondel|ok. 25 min|a
+K: polędwica z jelenia 600 g, lazur lub niebieski ser 90 g, śmietanka 30% 120 ml, szalotka 1 szt. (50 g), czerwone wino 60 ml
+S: oliwa 2 łyżki, sól 1 łyżeczka, pieprz, masło 20 g
+- Natrzyj mięso oliwą, solą i pieprzem. Airfryer 200°C: 10–13 min, do 54–56°C. Odstaw 8 min.
+- Szalotkę zeszklij na maśle, dodaj wino i zredukuj o połowę.
+- Dodaj śmietankę i ser. Mieszaj do rozpuszczenia. Podaj z puree z selera.
+# P6|Schab z jelenia w szynce parmeńskiej z serem pleśniowym|Garnek|ok. 40 min|g
+K: schab z jelenia 700 g, ser pleśniowy 80 g, szynka parmeńska 6 plastrów (80 g), świeży rozmaryn 3 gałązki
+S: sól, pieprz, oliwa 2 łyżki, masło 30 g
+- Natnij schab w poprzek i włóż w nacięcia po kawałku sera. Posól i popieprz.
+- Owiń szynką, obsmaż w oliwie 6 min ze wszystkich stron.
+- Dodaj masło i rozmaryn, przykryj. Piecz w 190°C 10–12 min, do 56°C.
+# P7|Medaliony z jelenia z gruszką i gorgonzolą|Airfryer|ok. 20 min|a
+K: polędwica z jelenia 500 g, gruszka 2 szt. (300 g), gorgonzola 80 g, orzechy włoskie 30 g, rukola 40 g
+S: oliwa 2 łyżki, sól, pieprz, masło 20 g
+- Pokrój mięso w plastry po 3 cm, posól i popieprz.
+- Airfryer 200°C: 6–8 min, do 54–56°C. Gruszki w plastrach podsmaż na maśle 2 min.
+- Podaj na rukoli z pokruszonym serem i orzechami.
+# P8|Gulasz z jelenia z piwem i serem pleśniowym|Garnek|ok. 2,5 h|g
+K: szynka z jelenia 1 kg, ciemne piwo 330 ml, ser pleśniowy 100 g, cebula 3 szt. (450 g), koncentrat pomidorowy 1 łyżka
+S: papryka wędzona 1 łyżeczka, liść laurowy 2 szt., sól, pieprz, olej 3 łyżki, bulion 300 ml
+- Obsmaż mięso partiami, zeszklij cebulę z koncentratem.
+- Zalej piwem i bulionem. Duś 2 h pod przykryciem.
+- Na koniec wmieszaj pokruszony ser i mieszaj 2–3 min na małym ogniu. Podaj z kopytkami.
+# P9|Polędwica z sarny w sosie z sera pleśniowego|Airfryer + rondel|ok. 25 min|a
+K: polędwica z sarny 500 g, ser pleśniowy 80 g, śmietanka 30% 100 ml, cebula 1 szt. (100 g)
+S: oliwa 2 łyżki, sól, pieprz
+- Natrzyj mięso oliwą, solą i pieprzem. Airfryer 200°C: 8–10 min, do 54–56°C. Odstaw 8 min.
+- Cebulę pokrój w ósemki i opiekaj na suchej patelni.
+- Śmietankę podgrzej z serem do rozpuszczenia, dodaj cebulę. Polej sosem plastry polędwicy.
+# P10|Medaliony z sarny z gruszką, serem pleśniowym i orzechami|Airfryer|ok. 20 min|a
+K: polędwica z sarny 500 g, gruszka 2 szt. (300 g), ser pleśniowy 80 g, orzechy włoskie 30 g
+S: oliwa 2 łyżki, sól, pieprz, masło 20 g
+- Pokrój polędwicę w plastry po 3 cm, posól i popieprz.
+- Airfryer 200°C: 6–8 min, do 54–56°C. Gruszki podsmaż na maśle 2 min.
+- Podaj z gruszką, pokruszonym serem i orzechami.
+# P11|Schab z sarny nadziewany serem pleśniowym i śliwką|Airfryer|ok. 25 min|a
+K: schab z sarny 600 g, ser pleśniowy 70 g, śliwki suszone 6 szt. (50 g), boczek wędzony plastry 80 g
+S: sól, pieprz, oliwa 1 łyżka
+- Natnij schab na kieszeń. Włóż ser i posiekane śliwki. Owiń boczkiem.
+- Airfryer 190°C: 14–16 min, do 56°C. Odstaw 8 min.
+- Podaj z kaszą jaglaną lub puree.
+# P12|Gulasz z sarny z kluskami śląskimi i sosem pleśniowym|Garnek|ok. 2 h|g
+K: łopatka z sarny 1 kg, ser pleśniowy 100 g, śmietanka 30% 100 ml, cebula 2 szt. (300 g), kluski śląskie (gotowe, 500 g, albo ziemniaki 600 g, mąka 200 g, jajko 1 szt.)
+S: jałowiec 5 ziaren, liść laurowy 2 szt., sól, pieprz, olej 3 łyżki, bulion 300 ml
+- Mięso w kostce obsmaż, dodaj cebulę, bulion i przyprawy. Duś 1,5 h.
+- Sos: śmietankę i ser podgrzewaj w rondelku do rozpuszczenia.
+- Podaj gulasz z kluskami i polej sosem.
+`;
+
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function splitTop(s) {
+  const out = []; let depth = 0, cur = '';
+  for (const ch of s) {
+    if (ch === '(') depth++;
+    if (ch === ')') depth--;
+    if (ch === ',' && depth === 0) { out.push(cur.trim()); cur = ''; } else cur += ch;
+  }
+  if (cur.trim()) out.push(cur.trim());
+  return out;
+}
+const sections = []; let sec = null, rec = null;
+RAW.split('\n').forEach(line => {
+  line = line.trim();
+  if (!line) return;
+  if (line.startsWith('## ')) {
+    const [key, name, count, intro] = line.slice(3).split('|');
+    sec = { key, name, count, intro, recipes: [] }; sections.push(sec); rec = null;
+  } else if (line.startsWith('# ')) {
+    const [id, title, method, time, tags] = line.slice(2).split('|');
+    rec = { id, title, method, time, tags, k: [], s: '', n: '', steps: [] }; sec.recipes.push(rec);
+  } else if (line.startsWith('K: ')) rec.k = splitTop(line.slice(3));
+  else if (line.startsWith('S: ')) rec.s = line.slice(3);
+  else if (line.startsWith('N: ')) rec.n = line.slice(3);
+  else if (line.startsWith('- ')) rec.steps.push(line.slice(2));
+});
+
+const tocEl = document.getElementById('toc');
+const recEl = document.getElementById('recipes');
+let tocHtml = '', recHtml = '';
+sections.forEach(s => {
+  tocHtml += `<div><h3>${esc(s.name)}</h3><ol>` + s.recipes.map(r =>
+    `<li><a href="#r-${r.id}"><span class="tid">${r.id}</span><span>${esc(r.title)}</span></a></li>`).join('') + `</ol></div>`;
+  recHtml += `<section id="${s.key}" class="block"><div class="sec-head"><h2>${esc(s.name)}</h2><span class="count">${esc(s.count)}</span></div><p class="intro">${esc(s.intro)}</p>`;
+  s.recipes.forEach(r => {
+    recHtml += `<article class="recipe" id="r-${r.id}" data-tags="${r.tags}">
+      <div class="rhead"><span class="rid">${r.id}</span><h3 class="rt">${esc(r.title)}</h3>
+      <div class="meta"><span class="chip">${esc(r.method)}</span><span class="chip t">${esc(r.time)}</span></div></div>
+      ${r.n ? `<p class="note">${esc(r.n)}</p>` : ''}
+      <div class="rbody">
+        <div class="shop"><h4>Do kupienia</h4><ul>${r.k.map(i => `<li><label><input type="checkbox"><span>${esc(i)}</span></label></li>`).join('')}</ul>
+          <p class="pantry"><b>Spiżarnia</b>${esc(r.s)}</p></div>
+        <div class="how"><h4>Jak zrobić</h4><ol>${r.steps.map(t => `<li>${esc(t)}</li>`).join('')}</ol></div>
+      </div></article>`;
+  });
+  recHtml += `</section>`;
+});
+tocEl.innerHTML = tocHtml;
+recEl.innerHTML = recHtml;
+
+document.querySelectorAll('.filter button').forEach(b => b.addEventListener('click', () => {
+  const f = b.dataset.f;
+  document.querySelectorAll('.filter button').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+  document.querySelectorAll('.recipe').forEach(a => { a.hidden = !(f === 'all' || a.dataset.tags.includes(f)); });
+  document.querySelectorAll('#recipes .block').forEach(sc => { sc.querySelector('.count').textContent = f === 'all' ? sections.find(s => s.key === sc.id).count : (sc.querySelectorAll('.recipe:not([hidden])').length + ' z ' + sc.querySelectorAll('.recipe').length); });
+  document.querySelectorAll('.toc a').forEach(a => { const t = document.getElementById(a.getAttribute('href').slice(1)); a.parentElement.hidden = t ? t.hidden : false; });
+}));
+
+/* sylwety sosen */
+(function () {
+  const svg = document.getElementById('forest');
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  function layer(fill, count, minH, maxH, base) {
+    let d = '';
+    for (let i = 0; i < count; i++) {
+      const x = (i + rnd() * 0.8) * (1200 / count), h = minH + rnd() * (maxH - minH), w = h * (0.34 + rnd() * 0.1);
+      const top = base - h, tiers = 4;
+      d += `M${x.toFixed(1)} ${top.toFixed(1)}`;
+      for (let t = 1; t <= tiers; t++) { const y = top + h * (t / tiers) * 0.92, half = w * (t / tiers); d += `L${(x + half).toFixed(1)} ${y.toFixed(1)}L${(x + half * 0.55).toFixed(1)} ${y.toFixed(1)}`; }
+      d += `L${(x + w * 0.1).toFixed(1)} ${base}L${(x - w * 0.1).toFixed(1)} ${base}`;
+      for (let t = tiers; t >= 1; t--) { const y = top + h * (t / tiers) * 0.92, half = w * (t / tiers); d += `L${(x - half * 0.55).toFixed(1)} ${y.toFixed(1)}L${(x - half).toFixed(1)} ${y.toFixed(1)}`; }
+      d += 'Z';
+    }
+    return `<path style="fill:${fill}" d="${d}"/>`;
+  }
+  svg.innerHTML = layer('var(--tree-far)', 26, 60, 110, 152) + layer('var(--tree-near)', 18, 80, 140, 160) + `<rect x="0" y="146" width="1200" height="8" style="fill:var(--tree-near)"/>`;
+})();
+</script>
+
+</body>
+</html>
